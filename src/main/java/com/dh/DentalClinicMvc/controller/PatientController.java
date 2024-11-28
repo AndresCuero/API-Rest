@@ -1,29 +1,53 @@
 package com.dh.DentalClinicMvc.controller;
 
 import com.dh.DentalClinicMvc.model.Patient;
-import com.dh.DentalClinicMvc.service.PatientService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.dh.DentalClinicMvc.service.impl.PatientService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/patient")
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/patients")
 public class PatientController {
 
     private PatientService patientService;
 
-    public PatientController(PatientService patientService){
+    @Autowired
+    public PatientController(PatientService patientService) {
         this.patientService = patientService;
     }
 
+    @PostMapping
+    public Patient save(@RequestBody Patient patient) throws Exception{
+        return patientService.save(patient);
+    }
+
+    @PutMapping
+    public void udated(@RequestBody Patient patient){
+        patientService.update(patient);
+    }
+
     @GetMapping
-    public String findPatientByEmail(Model model, @RequestParam("email") String email){
-        Patient patient = patientService.findByEmail(email);
-        model.addAttribute("name", patient.getName());
-        model.addAttribute("lastname", patient.getLastname());
-        return "index";
+    public ResponseEntity<Patient> findById( @RequestParam Long id){
+        Optional<Patient> optional = patientService.findById(id);
+        if(optional.isPresent()){
+          return   ResponseEntity.ok(optional.get());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @GetMapping("/all")
+    public List<Patient> findByAll(){
+       return patientService.findAll();
+    }
+
+    @DeleteMapping
+    public void deleteUser(@RequestParam Long id){
+       patientService.deleteById(id);
     }
 
 
