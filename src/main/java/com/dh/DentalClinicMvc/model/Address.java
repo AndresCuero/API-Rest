@@ -2,16 +2,27 @@ package com.dh.DentalClinicMvc.model;
 
 import jakarta.persistence.*;
 
-
+@Entity
+@Table(name = "Adressse")
 public class Address {
 
-    private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="id")
+    private Long id;
+    @Column(name = "street")
     private String street;
+    @Column(name = "number")
     private Integer number;
+    @Column(name = "location")
     private String location;
+    @Column(name = "province")
     private String province;
 
-    public Address(Integer id, String street, Integer number, String location, String province) {
+    public Address() {
+    }
+
+    public Address(Long id, String street, Integer number, String location, String province) {
         this.id = id;
         this.street = street;
         this.number = number;
@@ -19,22 +30,13 @@ public class Address {
         this.province = province;
     }
 
-    public Address(String street, String location, Integer number, String province) {
-        this.street = street;
-        this.location = location;
-        this.number = number;
-        this.province = province;
-    }
 
-    public Address() {
 
-    }
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
