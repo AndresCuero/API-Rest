@@ -1,15 +1,19 @@
 package com.dh.DentalClinicMvc.service;
 
-import com.dh.DentalClinicMvc.model.Appointment;
+
+
+import com.dh.DentalClinicMvc.dto.AppointmentDTO;
+import com.dh.DentalClinicMvc.entity.Appointment;
+import com.dh.DentalClinicMvc.exeception.ResourceNotFoundExeception;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IAppointmentService {
 
-    Appointment save (Appointment appointment);
-    Optional<Appointment> findById(Long id);
-    void update(Appointment appointment);
-    void delete(Long id);
-    List<Appointment> findAll();
+    AppointmentDTO save (AppointmentDTO appointmentDTO);
+    Optional<AppointmentDTO> findById(Long id);
+    AppointmentDTO update(AppointmentDTO appointmentDTO) throws Exception;
+    Optional<AppointmentDTO> delete(Long id) throws ResourceNotFoundExeception;
+    List<AppointmentDTO> findAll();
 }

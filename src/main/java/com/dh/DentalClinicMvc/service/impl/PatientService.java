@@ -1,7 +1,8 @@
 package com.dh.DentalClinicMvc.service.impl;
 
 import com.dh.DentalClinicMvc.Repository.PatientRepository;
-import com.dh.DentalClinicMvc.model.Patient;
+import com.dh.DentalClinicMvc.entity.Patient;
+import com.dh.DentalClinicMvc.exeception.ResourceNotFoundExeception;
 import com.dh.DentalClinicMvc.service.IPatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,13 @@ public class PatientService implements IPatientService {
             return patientRepository.findById(id);
         }
 
-        public void deleteById(Long id) {
-            patientRepository.deleteById(id);
+        public void deleteById(Long id) throws ResourceNotFoundExeception {
+            Optional<Patient> patient = patientRepository.findById(id);
+            if(patient.isPresent()){
+                patientRepository.deleteById(id);
+            }else{
+                throw new ResourceNotFoundExeception("No se encontro el id "+ id);
+            }
         }
 
         public List<Patient> findAll() {

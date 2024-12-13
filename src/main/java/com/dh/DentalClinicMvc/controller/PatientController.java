@@ -1,6 +1,7 @@
 package com.dh.DentalClinicMvc.controller;
 
-import com.dh.DentalClinicMvc.model.Patient;
+import com.dh.DentalClinicMvc.entity.Patient;
+import com.dh.DentalClinicMvc.exeception.ResourceNotFoundExeception;
 import com.dh.DentalClinicMvc.service.impl.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,8 +47,9 @@ public class PatientController {
     }
 
     @DeleteMapping
-    public void deleteUser(@RequestParam Long id){
-       patientService.deleteById(id);
+    public ResponseEntity<String> deleteUser(@RequestParam Long id) throws ResourceNotFoundExeception {
+        patientService.deleteById(id);
+       return ResponseEntity.ok("Se elimino el id "+id);
     }
 
 
