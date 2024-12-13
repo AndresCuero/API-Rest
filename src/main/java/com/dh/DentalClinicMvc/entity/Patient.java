@@ -1,6 +1,8 @@
-package com.dh.DentalClinicMvc.model;
+package com.dh.DentalClinicMvc.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Patients")
@@ -9,25 +11,34 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "patient_id")
-    private long id;
+    private Long id;
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "lastname")
     private String lastname;
+
     @Column(name = "cardIdentity")
     private Integer cardIdentity;
+
     @Column(name = "admissionOfDate")
     private LocalDate admissionOfDate;
-    @OneToOne(cascade = CascadeType.ALL)
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
+
     @Column(name = "email")
     private String email;
+
+    @OneToMany(mappedBy = "patient")
+    private Set<Appointment> appointment = new HashSet<>();
 
     public Patient() {
     }
 
-    public Patient(long id, String name, String lastname, Integer cardIdentity, LocalDate admissionOfDate, Address address, String email) {
+    public Patient(Long id, String name, String lastname, Integer cardIdentity, LocalDate admissionOfDate, Address address, String email) {
         this.id = id;
         this.name = name;
         this.lastname = lastname;
@@ -38,11 +49,11 @@ public class Patient {
     }
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -94,4 +105,11 @@ public class Patient {
         this.email = email;
     }
 
+    public Set<Appointment> getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Set<Appointment> appointment) {
+        this.appointment = appointment;
+    }
 }

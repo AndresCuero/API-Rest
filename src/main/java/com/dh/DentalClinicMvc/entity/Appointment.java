@@ -1,4 +1,4 @@
-package com.dh.DentalClinicMvc.model;
+package com.dh.DentalClinicMvc.entity;
 
 import jakarta.persistence.*;
 
@@ -12,16 +12,26 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "appointment_id")
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
+
     @ManyToOne
     @JoinColumn(name = "dentist_id", nullable = false)
     private Dentist dentist;
+
     @Column(name = "date")
     private LocalDate date;
 
     public Appointment() {
+    }
+
+    public Appointment(Long id, Patient patient, Dentist dentist, LocalDate date) {
+        this.id = id;
+        this.patient = patient;
+        this.dentist = dentist;
+        this.date = date;
     }
 
     public Long getId() {
@@ -56,4 +66,3 @@ public class Appointment {
         this.date = date;
     }
 }
-

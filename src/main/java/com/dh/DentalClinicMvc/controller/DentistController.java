@@ -1,8 +1,10 @@
 package com.dh.DentalClinicMvc.controller;
 
-import com.dh.DentalClinicMvc.model.Dentist;
+import com.dh.DentalClinicMvc.entity.Dentist;
+import com.dh.DentalClinicMvc.exeception.ResourceNotFoundExeception;
 import com.dh.DentalClinicMvc.service.IDentistService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,23 +58,23 @@ public class DentistController {
 
     //vamos a borrar un odontólogo
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
-        ResponseEntity<String> response;
-        Optional<Dentist> dentist = iDentistService.findById(id);
-
-        if (dentist.isPresent()) {
-            iDentistService.deleteById(id);
-            response = ResponseEntity.ok("Se eliminó el odontólogo con id: " + id);
-
-        } else {
-            response = ResponseEntity.ok().body("No se puede eliminar un odontólogo que no existe en la base de datos");
-        }
-        return response;
+    public ResponseEntity<String> delete(@PathVariable Long id) throws ResourceNotFoundExeception {
+      iDentistService.deleteById(id);
+      return ResponseEntity.ok("Se elimino corretamente el id "+id);
     }
 
     //vamos a listar todos los odontólogos
     @GetMapping
     public ResponseEntity<List<Dentist>> findAll() {
         return ResponseEntity.ok(iDentistService.findAll());
+    }
+
+   @GetMapping("/registration/{registration}")
+    public ResponseEntity<Dentist> findByRegistration(@PathVariable Integer registration) throws Exception {
+        Optional<Dentist> dentist = iDentistService.findByRegistration(registration);
+        if(!dentist.isPresent()){
+            throw new Exception("No se encontro la matricula "+registration);
+        }
+       return ResponseEntity.ok(dentist.get());
     }
 }

@@ -1,7 +1,7 @@
 package com.dh.DentalClinicMvc.service.impl;
 
 import com.dh.DentalClinicMvc.Repository.AddressRepository;
-import com.dh.DentalClinicMvc.model.Address;
+import com.dh.DentalClinicMvc.entity.Address;
 import com.dh.DentalClinicMvc.service.IAdrressSerivice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,8 @@
 package com.dh.DentalClinicMvc.controller;
 
-import com.dh.DentalClinicMvc.model.Appointment;
+import com.dh.DentalClinicMvc.dto.AppointmentDTO;
+import com.dh.DentalClinicMvc.entity.Appointment;
+import com.dh.DentalClinicMvc.exeception.ResourceNotFoundExeception;
 import com.dh.DentalClinicMvc.service.IAppointmentService;
 import com.dh.DentalClinicMvc.service.IDentistService;
 import com.dh.DentalClinicMvc.service.IPatientService;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@RestController
+@RequestMapping("/turnos")
 public class AppointmentController {
 
     private IAppointmentService appointmentService;
@@ -24,19 +28,19 @@ public class AppointmentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Appointment>> findAll() {
+    public ResponseEntity<List<AppointmentDTO>> findAll() {
         return ResponseEntity.ok(appointmentService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<Appointment> save(@RequestBody Appointment appointment) {
-        ResponseEntity<Appointment> response;
+    public ResponseEntity<AppointmentDTO> save(@RequestBody AppointmentDTO  appointmentDTO) {
+        ResponseEntity<AppointmentDTO> response;
 
-        //chequeamos que existan el odontólogo y el paciente
-        if (dentistService.findById(appointment.getDentist().getId()).isPresent()
-                && patientService.findById(appointment.getPatient().getId()).isPresent()) {
-            //seteamos al ResponseEntity con el código 200 y le agregamos el turno como cuerpo de la respuesta
-            response = ResponseEntity.ok(appointmentService.save(appointment));
+
+        if (dentistService.findById(appointmentDTO.getDentist_id()).isPresent()
+                && patientService.findById(appointmentDTO.getPatient_id()).isPresent()) {
+
+            response = ResponseEntity.ok(appointmentService.save(appointmentDTO));
 
         } else {
             //setear al ResponseEntity el código 400
@@ -46,8 +50,8 @@ public class AppointmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Appointment> findById(Long id) {
-        Optional<Appointment> appointmentToLookFor = appointmentService.findById(id);
+    public ResponseEntity<AppointmentDTO> findById(@PathVariable Long id) {
+        Optional<AppointmentDTO> appointmentToLookFor = appointmentService.findById(id);
 
         if(appointmentToLookFor.isPresent()) {
             return ResponseEntity.ok(appointmentToLookFor.get());
@@ -57,37 +61,27 @@ public class AppointmentController {
     }
 
     @PutMapping
-    public ResponseEntity<String> update(@RequestBody Appointment appointment) {
-        ResponseEntity<String> response;
+    public ResponseEntity<AppointmentDTO> update(@RequestBody AppointmentDTO appointmentDTO) throws Exception {
+        ResponseEntity<AppointmentDTO> response;
 
-        //chequeamos que existan el odontólogo y el paciente
-        if (dentistService.findById(appointment.getDentist().getId()).isPresent()
-                && patientService.findById(appointment.getPatient().getId()).isPresent()) {
-            //ambos existen en la DB
-            //seteamos al ResponseEntity con el código 200 y le agregamos el turno como cuerpo de la respuesta
-            appointmentService.update(appointment);
-            response = ResponseEntity.ok("Se actualizó el turno con id: " + appointment.getId());
+
+        if (dentistService.findById(appointmentDTO.getDentist_id()).isPresent()
+                && patientService.findById(appointmentDTO.getPatient_id()).isPresent()) {
+
+            response = ResponseEntity.ok(appointmentService.update(appointmentDTO));
 
         } else {
-            //uno no existe, entonces bloqueamos la operación
-            //setear al ResponseEntity el código 400
-            response = ResponseEntity.badRequest().body("No se puede actualizar un turno que no existe en la base de datos");
+            response = ResponseEntity.badRequest().build();
         }
         return response;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) throws ResourceNotFoundExeception {
         ResponseEntity<String> response;
+        appointmentService.delete(id);
+        return ResponseEntity.ok("Se elimino el turno con id "+id);
 
-        if (appointmentService.findById(id).isPresent()) {
-            appointmentService.delete(id);
-            response = ResponseEntity.ok("Se eliminó el turno con id: " + id);
-
-        } else {
-            response = ResponseEntity.ok().body("No se puede eliminar un turno que no existe en la base de datos");
-        }
-        return response;
     }
 
 

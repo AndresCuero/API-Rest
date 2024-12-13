@@ -1,9 +1,10 @@
 package com.dh.DentalClinicMvc.service;
 
-import com.dh.DentalClinicMvc.model.Address;
+import com.dh.DentalClinicMvc.entity.Address;
 
 import java.util.List;
 import java.util.Optional;
+
 
 public interface IAdrressSerivice {
 
